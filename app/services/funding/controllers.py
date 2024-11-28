@@ -1,4 +1,4 @@
-from litestar import post, get, put, delete, HTTPException
+from litestar import post, get, put, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from litestar.di import Provide
 from app.dtos.project_dto import ProjectCreate, ProjectOut, ProjectUpdate
@@ -16,7 +16,8 @@ async def create_project(
     
     creator = await user_repo.get_user_by_id(project_data.creator_id)
     if not creator:
-        raise HTTPException(status_code=404, detail="Creator not found")
+        # raise ception(status_code=404, detail="Creator not found")
+        return
     
     project_dict = project_data.dict(exclude={"creator_id"})
     new_project = await project_repo.create_project(project_dict, project_data.creator_id)

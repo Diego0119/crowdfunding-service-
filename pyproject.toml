@@ -1,5 +1,5 @@
 [project]
-name = "bd2-hw2-project"
+name = "crowdfunding-service"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

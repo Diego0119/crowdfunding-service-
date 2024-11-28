@@ -90,7 +90,7 @@ wheels = [
 ]
 
 [[package]]
-name = "bd2-hw2-project"
+name = "crowdfunding-service"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

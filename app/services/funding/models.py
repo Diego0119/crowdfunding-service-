@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.database import Base
 from typing import TYPE_CHECKING, Optional, List
 from datetime import datetime
+from sqlalchemy import DateTime
+
 
 if TYPE_CHECKING:
     from app.account.models import User
@@ -60,7 +62,7 @@ class Comment(Base):
     project_id: Mapped[int] = mapped_column(ForeignKey('projects.id'), nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    created_at: Mapped[DateTime] = mapped_column(nullable=False)
+    created_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
 
     user: Mapped["User"] = relationship("User")
     project: Mapped["Project"] = relationship("Project")
