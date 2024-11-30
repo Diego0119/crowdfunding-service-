@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.project import Project
+from app.services.funding.models import Project
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
