@@ -12,8 +12,10 @@ class ProjectBase(BaseModel):
     category: str 
     rewards: str  
 
-class ProjectCreate(ProjectBase):
-    creator_id: int  
+class ProjectCreate(BaseModel):
+    name: str
+    description: str
+    goal: float
 
 
 class ProjectUpdate(BaseModel):

@@ -5,7 +5,7 @@ from litestar import Controller
 from typing import Any
 
 class UserController(Controller):
-    path = "/users"  
+    path = "/"  
 
     @get("/{user_id:int}", response_model=UserDTO)
     async def get_user(self, request: Any, user_id: int) -> None:
@@ -38,5 +38,5 @@ class UserController(Controller):
 
 accounts_router = Router(
     route_handlers=[UserController], 
-    path="/accounts",
+    path="/users",
 )

@@ -12,3 +12,5 @@ app = Litestar(
     on_app_init=[oauth2_auth.on_app_init],
     debug=settings.debug,
 )
+for route in app.routes:
+    print(f"Route: {route.path}, Method: {route.methods}")
