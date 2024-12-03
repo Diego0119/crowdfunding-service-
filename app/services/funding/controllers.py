@@ -3,15 +3,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.services.funding.dtos import ProjectCreate, ProjectOut
 from app.services.funding.repositories import ProjectRepository
 from app.services.accounts.repositories import UserRepository
+from sqlalchemy.orm import Session
 
 class ProjectController(Controller):
     path = "/"  
 
     @post("/create")
-    async def create_project(self) -> dict:
-        # aca debe ir la logica
-        return {"detail": "OK"}, 200
-    
+    def create_project(self, data: ProjectCreate, db: Session) -> dict:
+        project_repo = ProjectRepository(db)
+
+        creator_id = 1  
+
+        project = project_repo.create_project(data.dict(), creator_id)
+
+        return {"detail": "Project created successfully", "project_id": project.id}, 200
 
     @get("/")
     async def get_projects(self, db: AsyncSession) -> None:

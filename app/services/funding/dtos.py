@@ -15,8 +15,11 @@ class ProjectBase(BaseModel):
 class ProjectCreate(BaseModel):
     name: str
     description: str
-    goal: float
-
+    goal_amount: float
+    start_date: str
+    end_date: str
+    category: str
+    rewards: str
 
 class ProjectUpdate(BaseModel):
     name: Optional[str]
