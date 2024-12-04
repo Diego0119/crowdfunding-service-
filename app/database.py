@@ -11,8 +11,8 @@ sqlalchemy_config = SQLAlchemySyncConfig(
     session_config=SyncSessionConfig(expire_on_commit=False),
     before_send_handler=sync_autocommit_before_send_handler,
 )
-sqlalchemy_plugin = SQLAlchemyPlugin(config=sqlalchemy_config)
 
+sqlalchemy_plugin = SQLAlchemyPlugin(config=sqlalchemy_config)
 
 class Base(CommonTableAttributes, DeclarativeBase):
     pass

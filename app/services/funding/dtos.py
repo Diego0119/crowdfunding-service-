@@ -39,7 +39,7 @@ class ProjectOut(ProjectBase):
     status: str  
 
     class Config:
-        orm_mode = True  
+        from_attributes = True  
 
 # dtos para la contribucion
 class ContributionBase(BaseModel):
@@ -57,5 +57,5 @@ class ContributionOut(ContributionBase):
     contributed_at: datetime  
 
     class Config:
-        orm_mode = True  
+        from_attributes = True    
 
