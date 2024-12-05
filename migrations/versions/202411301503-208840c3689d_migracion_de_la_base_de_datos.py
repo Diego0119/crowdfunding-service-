@@ -24,18 +24,20 @@ def upgrade() -> None:
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
 
     op.create_table('projects',
-    sa.Column('id', sa.Integer(), nullable=False, autoincrement=True),
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('description', sa.Text(), nullable=False),
-    sa.Column('goal_amount', sa.Float(), nullable=False),
-    sa.Column('contributions_count', sa.Integer(), nullable=False),
-    sa.Column('current_amount', sa.Float(), nullable=False),
-    sa.Column('start_date', sa.DateTime(), nullable=False),
-    sa.Column('end_date', sa.DateTime(), nullable=False),
-    sa.Column('status', sa.Enum('active', 'cancelled', 'completed'), nullable=False),
-    sa.Column('creator_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['creator_id'], ['users.id']),
-    sa.PrimaryKeyConstraint('id')
+        sa.Column('id', sa.Integer(), nullable=False, autoincrement=True),
+        sa.Column('name', sa.String(), nullable=False),
+        sa.Column('description', sa.Text(), nullable=False),
+        sa.Column('goal_amount', sa.Float(), nullable=False),
+        sa.Column('contributions_count', sa.Integer(), nullable=False),
+        sa.Column('current_amount', sa.Float(), nullable=False),
+        sa.Column('start_date', sa.DateTime(), nullable=False),
+        sa.Column('end_date', sa.DateTime(), nullable=False),
+        sa.Column('status', sa.Enum('active', 'cancelled', 'completed'), nullable=False),
+        sa.Column('creator_id', sa.Integer(), nullable=False),
+        sa.Column('category', sa.String(), nullable=True),
+        sa.Column('rewards', sa.String(), nullable=True),
+        sa.ForeignKeyConstraint(['creator_id'], ['users.id']),
+        sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_projects_id'), 'projects', ['id'], unique=False)
     op.create_index(op.f('ix_projects_name'), 'projects', ['name'], unique=False)

@@ -16,16 +16,18 @@ class Project(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
     goal_amount: Mapped[float] = mapped_column(nullable=False)
     contributions_count: Mapped[int] = mapped_column(default=0)
+    category = Column(String, nullable=True) 
     current_amount: Mapped[float] = mapped_column(default=0.0)
     start_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     end_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    status: Mapped[str] = mapped_column(Enum("active", "cancelled", "completed"), default="active")
+    status: Mapped[str] = mapped_column(Enum("active", "cancelled", "completed"), default="active") 
+    rewards = Column(String, nullable=True) 
 
-    creator_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
+    creator_id: Mapped[Optional[int]] = mapped_column(ForeignKey('users.id'), nullable=True)
 
     creator: Mapped["User"] = relationship("User", back_populates="projects")  
-    contributions: Mapped[List["Contribution"]] = relationship("Contribution", back_populates="project") 
-    evaluations: Mapped[List["Evaluation"]] = relationship("Evaluation", back_populates="project") 
+    # contributions: Mapped[List["Contribution"]] = relationship("Contribution", back_populates="project") 
+    # evaluations: Mapped[List["Evaluation"]] = relationship("Evaluation", back_populates="project") 
 
 
 class Contribution(Base):
@@ -39,7 +41,7 @@ class Contribution(Base):
     payment_method: Mapped[str] = mapped_column(String, nullable=False)
 
     user: Mapped["User"] = relationship("User", back_populates="contributions")
-    project: Mapped["Project"] = relationship("Project", back_populates="contributions")
+    # project: Mapped["Project"] = relationship("Project", back_populates="contributions")
 
 
 class Evaluation(Base):
@@ -53,7 +55,7 @@ class Evaluation(Base):
     created_at: Mapped[datetime] = mapped_column(nullable=False)
 
     user: Mapped["User"] = relationship("User")
-    project: Mapped["Project"] = relationship("Project", back_populates="evaluations")
+    # project: Mapped["Project"] = relationship("Project", back_populates="evaluations")
 
 
 class Comment(Base):
