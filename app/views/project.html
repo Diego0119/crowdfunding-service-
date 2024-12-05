@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Proyecto - Crowdfunding App</title>
+    <link rel="stylesheet" href="public/css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="public/images/logo.png" alt="Crowdfunding App">
+        </div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="project.html">Proyectos</a>
+            <a href="user-profile.html">Perfil</a>
+            <a href="#">Cerrar sesión</a>
+        </nav>
+    </header>
+
+    <section class="create-project">
+        <h1>Crear Nuevo Proyecto</h1>
+        <form id="createProjectForm">
+            <label for="name">Nombre del Proyecto:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="description">Descripción:</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <label for="goal">Meta de Financiación:</label>
+            <input type="number" id="goal" name="goal" required>
+
+            <label for="start_date">Fecha de Inicio:</label>
+            <input type="date" id="start_date" name="start_date" required>
+
+            <label for="end_date">Fecha de Fin:</label>
+            <input type="date" id="end_date" name="end_date" required>
+
+            <label for="category">Categoria:</label>
+            <input type="text" id="category" name="category" required>
+
+            <label for="rewards">Recompensa:</label>
+            <input type="text" id="rewards" name="rewards" required>
+
+
+            <button type="submit" class="btn-primary">Crear Proyecto</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Crowdfunding App. Todos los derechos reservados.</p>
+    </footer>
+    <script>
+        document.getElementById('createProjectForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            const projectData = {
+                name: formData.get('name'),
+                description: formData.get('description'),
+                goal: parseFloat(formData.get('goal')),
+                start_date: formData.get('start_date'),
+                end_date: formData.get('end_date'),
+                category: formData.get('category'),
+                rewards: formData.get('rewards'),
+            };
+
+            try {
+                const response = await fetch('http://localhost:8000/projects/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(projectData),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al crear el proyecto');
+                }
+
+                const result = await response.json();
+                alert('Proyecto creado con éxito: ' + result.name);
+                e.target.reset();
+            } catch (error) {
+                console.error(error);
+                alert('Hubo un error al crear el proyecto.');
+            }
+        });
+    </script>
+</body>
+
+</html>
