@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Proyecto - Crowdfunding App</title>
+    <title>Proyecto - Crowdfunding App</title>
     <link rel="stylesheet" href="public/css/style.css">
 </head>
 
@@ -21,38 +21,40 @@
         </nav>
     </header>
 
-    <section class="create-project">
-        <h1>Crear Nuevo Proyecto</h1>
-        <form id="createProjectForm">
-            <label for="name">Nombre del Proyecto:</label>
-            <input type="text" id="name" name="name" required>
+    <main>
+        <section class="create-project">
+            <h1>Crear Nuevo Proyecto</h1>
+            <form id="createProjectForm">
+                <label for="name">Nombre del Proyecto:</label>
+                <input type="text" id="name" name="name" required>
 
-            <label for="description">Descripción:</label>
-            <textarea id="description" name="description" required></textarea>
+                <label for="description">Descripción:</label>
+                <textarea id="description" name="description" required></textarea>
 
-            <label for="goal">Meta de Financiación:</label>
-            <input type="number" id="goal" name="goal" required>
+                <label for="goal">Meta de Financiación:</label>
+                <input type="number" id="goal" name="goal" required>
 
-            <label for="start_date">Fecha de Inicio:</label>
-            <input type="date" id="start_date" name="start_date" required>
+                <label for="start_date">Fecha de Inicio:</label>
+                <input type="date" id="start_date" name="start_date" required>
 
-            <label for="end_date">Fecha de Fin:</label>
-            <input type="date" id="end_date" name="end_date" required>
+                <label for="end_date">Fecha de Fin:</label>
+                <input type="date" id="end_date" name="end_date" required>
 
-            <label for="category">Categoria:</label>
-            <input type="text" id="category" name="category" required>
+                <label for="category">Categoria:</label>
+                <input type="text" id="category" name="category" required>
 
-            <label for="rewards">Recompensa:</label>
-            <input type="text" id="rewards" name="rewards" required>
+                <label for="rewards">Recompensa:</label>
+                <input type="text" id="rewards" name="rewards" required>
 
-
-            <button type="submit" class="btn-primary">Crear Proyecto</button>
-        </form>
-    </section>
+                <button type="submit" class="btn-primary">Crear Proyecto</button>
+            </form>
+        </section>
+    </main>
 
     <footer>
         <p>&copy; 2024 Crowdfunding App. Todos los derechos reservados.</p>
     </footer>
+
     <script>
         document.getElementById('createProjectForm').addEventListener('submit', async function (e) {
             e.preventDefault();

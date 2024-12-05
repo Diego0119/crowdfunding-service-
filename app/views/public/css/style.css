@@ -1,118 +1,372 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
 
 header {
     background-color: #333;
-    padding: 10px 20px;
+    padding: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-header .logo img {
-    width: 150px;
+header .logo {
+    margin-left: 20px;
 }
 
-nav {
-    display: flex;
-    align-items: center;
+header nav {
+    margin-right: 20px;
 }
 
-nav a {
-    margin: 0 15px;
+header nav a {
     color: white;
+    margin: 0 15px;
     text-decoration: none;
-}
-
-nav a:hover {
-    text-decoration: underline;
 }
 
 .hero {
     position: relative;
-    text-align: center;
+    background-color: #2a2a2a;
     color: white;
-}
-
-.hero-img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
+    text-align: center;
+    padding: 40px 20px;
 }
 
 .hero-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.hero-text h1 {
-    font-size: 3rem;
+.hero h1 {
+    font-size: 3em;
     margin-bottom: 10px;
-    color: black;
 }
 
-.hero-text p {
-    font-size: 1.5rem;
+.hero p {
+    font-size: 1.2em;
     margin-bottom: 20px;
-    color: black;
 }
 
-.btn-primary,
-.btn-secondary {
-    padding: 10px 20px;
+.hero a {
+    text-decoration: none;
+}
+
+.btn-primary {
     background-color: #4CAF50;
     color: white;
+    padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
 }
 
-.btn-primary:hover,
-.btn-secondary:hover {
-    background-color: #45a049;
+.featured-projects {
+    padding: 40px 20px;
+    background-color: #fff;
+    text-align: center;
 }
 
-.featured-projects {
-    padding: 40px 0;
-    text-align: center;
+.featured-projects h2 {
+    font-size: 2em;
+    margin-bottom: 30px;
 }
 
 .project-list {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .project-card {
-    width: 30%;
-    padding: 20px;
     background-color: white;
     border-radius: 8px;
+    padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    width: 250px;
 }
 
 .project-card img {
-    width: 100%;
+    max-width: 100%;
     border-radius: 8px;
 }
 
-footer {
-    background-color: #333;
-    color: white;
-    text-align: center;
-    padding: 20px 0;
+.project-card h3 {
+    font-size: 18px;
+    margin: 10px 0;
 }
 
-footer p {
-    font-size: 1rem;
+.project-card p {
+    font-size: 14px;
+    color: #555;
+}
+
+.project-card progress {
+    width: 100%;
+    height: 15px;
+    margin: 10px 0;
+}
+
+.logo img {
+    width: 100px;
+    height: auto;
+}
+
+.create-project {
+    background-color: #fff;
+    padding: 40px 20px;
+    margin: 20px auto;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.create-project h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+#createProjectForm {
+    display: grid;
+    gap: 15px;
+}
+
+#createProjectForm label {
+    font-size: 1.1em;
+    color: #555;
+}
+
+#createProjectForm input,
+#createProjectForm textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#createProjectForm input[type="date"] {
+    background-color: #fff;
+}
+
+#createProjectForm textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+#createProjectForm button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#createProjectForm button:hover {
+    background-color: #45a049;
+}
+
+.project-details {
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+}
+
+.project-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.project-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.project-header .category {
+    font-size: 1.2em;
+    color: #555;
+}
+
+.project-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.project-info .project-description,
+.project-info .project-stats {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 48%;
+}
+
+.project-info h2 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+}
+
+.project-info p {
+    font-size: 1.1em;
+    color: #555;
+    margin: 10px 0;
+}
+
+.project-info progress {
+    width: 100%;
+    height: 15px;
+    margin: 10px 0;
+}
+
+.rewards {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+}
+
+.rewards h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.reward-item {
+    margin-bottom: 20px;
+}
+
+.reward-item h3 {
+    font-size: 1.5em;
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+.reward-item p {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.project-actions {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.project-actions .btn-primary {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.project-actions .btn-primary:hover {
+    background-color: #45a049;
+}
+
+.user-profile {
+    padding: 40px 20px;
+    background-color: #f4f4f4;
+}
+
+.user-profile h1 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-info {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.profile-info p {
+    font-size: 1.2em;
+    color: #555;
+    margin: 10px 0;
+}
+
+.profile-info strong {
+    color: #333;
+}
+
+.project-list {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.project-card {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 48%;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.project-card img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.project-card h3 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.project-card p {
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.project-card a {
+    text-decoration: none;
+}
+
+.project-card .btn-secondary {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+.project-card .btn-secondary:hover {
+    background-color: #45a049;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: auto;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
 }
