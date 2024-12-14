@@ -25,5 +25,12 @@ class ProjectController(Controller):
         projects = project_repo.get_projects()
         return [ProjectOut.from_orm(project) for project in projects]
 
+    @get("/{project_id:int}")
+    async def get_project(self, project_id: int, project_repo: ProjectRepository) -> ProjectOut:
+        project = project_repo.get_project_by_id(project_id)
+        if not project:
+            return {"detail": "Project not found"}, 404
+        return ProjectOut.from_orm(project)
+
 
 funding_router = Router(route_handlers=[ProjectController], path="/projects")

@@ -24,40 +24,34 @@
     <main>
         <section class="project-details">
             <div class="project-header">
-                <h1>Nombre del Proyecto</h1>
-                <p class="category">Categoría: <span>Innovación</span></p>
+                <h1 id="project-name">Nombre del Proyecto</h1>
+                <p class="category">Categoría: <span id="project-category">Tecnología</span></p>
             </div>
 
             <div class="project-info">
                 <div class="project-description">
-                    <h2>Descripción</h2>
-                    <p>Este proyecto tiene como objetivo revolucionar el mercado de la tecnología con un producto
-                        innovador que cambiará la forma en que las personas interactúan con sus dispositivos.</p>
+                    <div>
+                        <h2>Descripción</h2>
+                        <p id="project-description">Descripción del proyecto</p>
+                    </div>
+
                 </div>
 
                 <div class="project-stats">
                     <h2>Estadísticas del Proyecto</h2>
-                    <p><strong>Meta de Financiación:</strong> $50,000</p>
-                    <p><strong>Recaudado:</strong> $35,000 (70%)</p>
-                    <progress value="70" max="100"></progress>
-                    <p><strong>Fecha de Inicio:</strong> 01 de enero de 2024</p>
-                    <p><strong>Fecha de Fin:</strong> 01 de marzo de 2024</p>
+                    <p><strong>Meta de Financiación:</strong> $<span id="funding-goal">1000.0</span></p>
+                    <p><strong>Recaudado:</strong> $<span id="amount-raised">0.0</span> (<span
+                            id="progress-percentage">0%</span>)</p>
+                    <progress id="funding-progress" value="0" max="100"></progress>
+                    <p><strong>Fecha de Inicio:</strong> <span id="start-date">01 de diciembre de 2024</span></p>
+                    <p><strong>Fecha de Fin:</strong> <span id="end-date">01 de diciembre de 2025</span></p>
                 </div>
             </div>
 
             <div class="rewards">
                 <h2>Recompensas</h2>
-                <div class="reward-item">
-                    <h3>$20 - Agradecimiento en redes sociales</h3>
-                    <p>Recibe un agradecimiento personalizado en nuestras redes sociales.</p>
-                </div>
-                <div class="reward-item">
-                    <h3>$50 - Producto de edición limitada</h3>
-                    <p>Obtén una unidad del producto en su versión más exclusiva.</p>
-                </div>
-                <div class="reward-item">
-                    <h3>$100 - Acceso anticipado y agradecimiento personal</h3>
-                    <p>Accede al producto antes que nadie y recibe un agradecimiento especial de parte del equipo.</p>
+                <div id="rewards-list">
+                    <!-- Las recompensas se cargarán dinámicamente aquí -->
                 </div>
             </div>
 
@@ -72,7 +66,38 @@
     </footer>
 
     <script>
-        // Agregar cualquier funcionalidad JavaScript necesaria (por ejemplo, para el botón de contribuir)
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+
+        fetch(`http://localhost:8000/projects/${projectId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.detail && data.detail === "Project not found") {
+                    alert("El proyecto no existe.");
+                } else {
+                    document.getElementById("project-name").textContent = data.name;
+                    document.getElementById("project-category").textContent = data.category || "Categoría no disponible";
+                    document.getElementById("project-description").textContent = data.description;
+                    document.getElementById("funding-goal").textContent = data.goal_amount.toFixed(2);
+                    document.getElementById("amount-raised").textContent = data.current_amount.toFixed(2);
+                    document.getElementById("progress-percentage").textContent = `${((data.current_amount / data.goal_amount) * 100).toFixed(2)}%`;
+                    document.getElementById("funding-progress").value = (data.current_amount / data.goal_amount) * 100;
+                    document.getElementById("start-date").textContent = new Date(data.start_date).toLocaleDateString();
+                    document.getElementById("end-date").textContent = new Date(data.end_date).toLocaleDateString();
+
+                    const rewardsList = document.getElementById("rewards-list");
+                    const rewards = data.rewards.split(",");
+                    rewards.forEach(reward => {
+                        const rewardItem = document.createElement("div");
+                        rewardItem.classList.add("reward-item");
+                        rewardItem.innerHTML = `<h3>${reward}</h3><p>Recibe esta recompensa como parte de tu contribución.</p>`;
+                        rewardsList.appendChild(rewardItem);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error al obtener los datos del proyecto:", error);
+            });
     </script>
 </body>
 

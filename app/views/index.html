@@ -31,37 +31,50 @@
 
     <section class="featured-projects">
         <h2>Proyectos</h2>
-        <div class="project-list">
-            <div class="project-card">
-                <img src="public/images/project1.jpg" alt="Proyecto A">
-                <h3>Proyecto A</h3>
-                <p>Descripción corta del proyecto A.</p>
-                <p>Financiado: 70%</p>
-                <progress value="70" max="100"></progress>
-                <a href="view-project.html" class="btn-secondary">Ver Más</a>
-            </div>
-            <div class="project-card">
-                <img src="public/images/project2.jpg" alt="Proyecto B">
-                <h3>Proyecto B</h3>
-                <p>Descripción corta del proyecto B.</p>
-                <p>Financiado: 50%</p>
-                <progress value="50" max="100"></progress>
-                <a href="view-project.html" class="btn-secondary">Ver Más</a>
-            </div>
-            <div class="project-card">
-                <img src="public/images/project3.jpg" alt="Proyecto C">
-                <h3>Proyecto C</h3>
-                <p>Descripción corta del proyecto C.</p>
-                <p>Financiado: 85%</p>
-                <progress value="85" max="100"></progress>
-                <a href="view-project.html" class="btn-secondary">Ver Más</a>
-            </div>
+        <div id="project-list" class="project-list">
+            <!-- Aquí se llenarán los proyectos dinámicamente -->
         </div>
     </section>
 
     <footer>
         <p>&copy; 2024 Crowdfunding App. Todos los derechos reservados.</p>
     </footer>
+
+    <script>
+        async function fetchProjects() {
+            try {
+                const response = await fetch('http://localhost:8000/projects');
+                if (!response.ok) {
+                    throw new Error('Error al obtener los proyectos.');
+                }
+
+                const projects = await response.json();
+                const projectList = document.getElementById('project-list');
+
+                projectList.innerHTML = '';
+
+                projects.forEach(project => {
+                    const percentage = (project.current_amount / project.goal_amount * 100).toFixed(2);
+                    const projectCard = `
+                        <div class="project-card">
+                            <img src="public/images/project${project.id}.jpg" alt="${project.name}">
+                            <h3>${project.name}</h3>
+                            <p>${project.description}</p>
+                            <p>Financiado: ${percentage}%</p>
+                            <progress value="${percentage}" max="100"></progress>
+                            <a href="view-project.html?id=${project.id}" class="btn-secondary">Ver Más</a>
+                        </div>
+                    `;
+                    projectList.innerHTML += projectCard;
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Hubo un error al cargar los proyectos.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchProjects);
+    </script>
 </body>
 
 </html>

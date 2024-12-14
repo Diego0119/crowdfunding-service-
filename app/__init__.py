@@ -8,10 +8,9 @@ from app.services.funding.controllers import funding_router
 
 # esto permite hacer peticion desde el front, pero no esta funcionando
 cors_config = CORSConfig(
-    allow_origins=["http://localhost:5500"], 
+    allow_origins=["http://127.0.0.1:5500"], 
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
     allow_headers=["Content-Type", "Authorization"],
-    allow_credentials=True,  
 )
 
 app = Litestar(
