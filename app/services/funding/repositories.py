@@ -82,6 +82,7 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         self.db_session.commit()
         self.db_session.refresh(project)
         self.db_session.refresh(user)
+        self.check_and_start_project(project)
         return contribution
 
     def cancel_proyects(self):
@@ -97,6 +98,14 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
             project.status = "cancelled"
 
         self.db_session.commit()
+    
+    def check_and_start_project(self, project: Project) -> None:
+        if project.current_amount >= project.goal_amount and project.status != "finalized" and project.status != "cancelled":
+            project.status = "completed"
+            self.db_session.add(project)
+            self.db_session.commit()
+            self.db_session.refresh(project)
+
 
 
 async def provide_project_repository(db_session: Session) -> ProjectRepository:
