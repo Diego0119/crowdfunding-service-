@@ -29,7 +29,7 @@ class Project(Base):
 
     creator: Mapped["User"] = relationship("User", back_populates="projects") 
     contributions: Mapped[List["Contribution"]] = relationship("Contribution", back_populates="project") 
-    # evaluations: Mapped[List["Evaluation"]] = relationship("Evaluation", back_populates="project") 
+    evaluations: Mapped[List["Evaluation"]] = relationship("Evaluation", back_populates="project") 
 
 
 class Contribution(Base):
@@ -57,7 +57,7 @@ class Evaluation(Base):
     created_at: Mapped[datetime] = mapped_column(nullable=False)
 
     user: Mapped["User"] = relationship("User")
-    # project: Mapped["Project"] = relationship("Project", back_populates="evaluations")
+    project: Mapped["Project"] = relationship("Project", back_populates="evaluations")
 
 
 class Comment(Base):

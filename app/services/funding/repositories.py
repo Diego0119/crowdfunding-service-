@@ -60,11 +60,14 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         project = self.db_session.query(Project).filter(Project.id == project_id).first()
         
         if not user or not project:
-            raise ValueError("Usuer or project not found.")
+            raise ValueError("User or project not found.")
         
         if user.money is None or user.money < amount:
             raise ValueError("Insufficient money in the users account.")
         
+        if project.status != "active":
+            raise ValueError("Project is not active.")
+
         new_balance = user.money - amount
         user.money = new_balance
         project.current_amount = project.current_amount + amount
@@ -100,7 +103,7 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         self.db_session.commit()
     
     def check_and_start_project(self, project: Project) -> None:
-        if project.current_amount >= project.goal_amount and project.status != "finalized" and project.status != "cancelled":
+        if project.current_amount >= project.goal_amount and project.status == "active":
             project.status = "completed"
             self.db_session.add(project)
             self.db_session.commit()
