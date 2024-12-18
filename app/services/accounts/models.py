@@ -14,7 +14,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String, unique=True, index=True)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
     password: Mapped[Optional[str]] = mapped_column(String)
-    money: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    money: Mapped[float] = mapped_column(Float, nullable=False, default=1000.0)
     
     projects_created: Mapped[int] = mapped_column(default=0)
     projects_contributed: Mapped[int] = mapped_column(default=0)

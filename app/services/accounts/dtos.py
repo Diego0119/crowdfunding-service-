@@ -15,7 +15,7 @@ class UserFullDTO(SQLAlchemyDTO[User]):
 
 
 class UserCreateDTO(SQLAlchemyDTO[User]):
-    config = SQLAlchemyDTOConfig(exclude={"id", "is_active"}, max_nested_depth=0)
+    config = SQLAlchemyDTOConfig(exclude={"id"}, max_nested_depth=0)
 
 
 class UserUpdateDTO(SQLAlchemyDTO[User]):
