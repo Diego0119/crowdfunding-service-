@@ -20,7 +20,9 @@ class Project(Base):
     current_amount: Mapped[float] = mapped_column(default=0.0)
     start_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     end_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    status: Mapped[str] = mapped_column(Enum("active", "cancelled", "completed"), default="active") 
+    status: Mapped[str] = mapped_column(Enum("active", "cancelled", "completed", "finalized"), default="active") 
+    # active = en proceso de recaudacion | cancelled = cuando no se llego a la meta en el tiempo estipulado 
+    # completed = cuando ya se llego a la meta y se esta trabajando en el proyecto | finalized es cuando ya se termino el proyecto
     rewards = Column(String, nullable=True) 
 
     creator_id: Mapped[Optional[int]] = mapped_column(ForeignKey('users.id'), nullable=True)
