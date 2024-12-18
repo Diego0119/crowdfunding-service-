@@ -46,10 +46,6 @@ class ContributionBase(BaseModel):
     amount: float
     payment_method: str
 
-class ContributionCreate(ContributionBase):
-    project_id: int  
-    user_id: int 
-
 class ContributionOut(ContributionBase):
     id: int 
     project_id: int  
@@ -58,3 +54,7 @@ class ContributionOut(ContributionBase):
 
     class Config:
         from_attributes = True    
+
+class EvaluationCreate(BaseModel):
+    rating: int
+    comment: Optional[str] = None

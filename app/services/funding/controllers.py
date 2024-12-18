@@ -3,12 +3,14 @@ from litestar.di import Provide
 from litestar.response import Response
 from sqlalchemy.orm import Session
 from typing import Union
-from app.services.funding.dtos import ProjectCreate, ProjectOut, ContributionBase
+from app.services.funding.dtos import ProjectCreate, ProjectOut, ContributionBase, EvaluationCreate
 from app.services.funding.repositories import ProjectRepository, provide_project_repository
 from app.services.funding.models import Project
 from app.database import sqlalchemy_plugin  
 from typing import List
 from typing import Dict
+from typing import List, Optional
+from litestar import Response
 
 
 class ProjectController(Controller):
@@ -63,6 +65,32 @@ class ProjectController(Controller):
         except Exception as e:
             return {"error": str(e)}, 400
 
+
+    async def contribute_to_project(self, project_repo: ProjectRepository, project_id: int, request: Request, data: ContributionBase):
+        user_id = request.user.id
+        contribution = project_repo.contribute_to_project(user_id, project_id, data.amount, data.payment_method)
+        project_repo.cancel_proyects() #Se agrega para actualizar los proyectos a medida que se va utilizando la app
+        if not contribution:
+            return Response({"detail": "Failed to add contribution."}, status_code=400)
+        else:
+            return {"detail": "Contribution added succesfully", "amount": contribution.amount, "project_id": project_id}
+
+    @post("/{project_id:int}/evaluate")
+    async def evaluate_project(self, project_id: int, data: EvaluationCreate, request: Request, project_repo: ProjectRepository) -> Response:
+        user_id = 1  # Asignamos el user_id fijo
+        
+        # Verificar si el proyecto existe
+        project = project_repo.get_project_by_id(project_id)
+        if not project:
+            return Response({"detail": "Project not found."}, status_code=404)
+        
+        # Agregar la evaluación
+        evaluation = project_repo.add_evaluation(user_id, project_id, data.rating, data.comment)
+        
+        if not evaluation:
+            return Response({"detail": "Failed to add evaluation."}, status_code=400)
+        else:
+            return Response({"detail": "Evaluation added successfully", "evaluation_id": evaluation.id}, status_code=200)
 
 
 funding_router = Router(route_handlers=[ProjectController], path="/projects")
