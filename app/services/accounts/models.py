@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from typing import TYPE_CHECKING, Optional, List
 
 if TYPE_CHECKING:
-    from app.funding.models import Project, Contribution, Evaluation, Comment
+    from app.services.funding.models import Project, Contribution, Evaluation, Comment
 
 class User(Base):
     __tablename__ = 'users'
@@ -14,7 +14,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String, unique=True, index=True)
     email: Mapped[str] = mapped_column(String, unique=True, index=True)
     password: Mapped[Optional[str]] = mapped_column(String)
-    money = sa.Column(sa.Float, nullable=False, default=0.0) 
+    money: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     
     projects_created: Mapped[int] = mapped_column(default=0)
     projects_contributed: Mapped[int] = mapped_column(default=0)

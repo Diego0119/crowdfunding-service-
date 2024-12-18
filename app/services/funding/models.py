@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 if TYPE_CHECKING:
-    from app.account.models import User
+    from app.services.accounts.models import User
 
 class Project(Base):
     __tablename__ = 'projects'
@@ -25,8 +25,8 @@ class Project(Base):
 
     creator_id: Mapped[Optional[int]] = mapped_column(ForeignKey('users.id'), nullable=True)
 
-    creator: Mapped["User"] = relationship("User", back_populates="projects")  
-    # contributions: Mapped[List["Contribution"]] = relationship("Contribution", back_populates="project") 
+    creator: Mapped["User"] = relationship("User", back_populates="projects") 
+    contributions: Mapped[List["Contribution"]] = relationship("Contribution", back_populates="project") 
     # evaluations: Mapped[List["Evaluation"]] = relationship("Evaluation", back_populates="project") 
 
 
@@ -41,7 +41,7 @@ class Contribution(Base):
     payment_method: Mapped[str] = mapped_column(String, nullable=False)
 
     user: Mapped["User"] = relationship("User", back_populates="contributions")
-    # project: Mapped["Project"] = relationship("Project", back_populates="contributions")
+    project: Mapped["Project"] = relationship("Project", back_populates="contributions")
 
 
 class Evaluation(Base):
@@ -65,7 +65,7 @@ class Comment(Base):
     project_id: Mapped[int] = mapped_column(ForeignKey('projects.id'), nullable=False)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    created_at: Mapped[datetime] = Column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     user: Mapped["User"] = relationship("User")
     project: Mapped["Project"] = relationship("Project")

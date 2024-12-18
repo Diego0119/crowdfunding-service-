@@ -58,4 +58,3 @@ class ContributionOut(ContributionBase):
 
     class Config:
         from_attributes = True    
-
