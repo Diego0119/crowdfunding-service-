@@ -113,7 +113,7 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         """Permite a un usuario calificar un proyecto."""
         project = self.db_session.query(Project).filter(Project.id == project_id).first()
 
-        if not project or project.status != "completed":
+        if not project or project.status != "finalized":
             raise ValueError("Project not found.")
 
         #verifica q el usuario haya contribuido al proyecto
