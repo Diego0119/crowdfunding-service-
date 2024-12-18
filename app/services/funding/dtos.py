@@ -43,8 +43,8 @@ class ProjectOut(ProjectBase):
 
 # dtos para la contribucion
 class ContributionBase(BaseModel):
-    amount: float  
-    payment_method: str  
+    amount: float
+    payment_method: str
 
 class ContributionOut(ContributionBase):
     id: int 

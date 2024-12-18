@@ -1,21 +1,22 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 from app.services.accounts.models import User
 from app.services.accounts.dtos import UserCreateDTO, UserUpdateDTO
 from sqlalchemy.orm import sessionmaker
 from typing import Optional
 
-class UserRepository:
-    def __init__(self, session: AsyncSession):
-        self.session = session
+class UserRepository(SQLAlchemySyncRepository[User]):
+    def __init__(self, db_session: Session):
+        self.db_session = db_session
 
     async def create_user(self, user_data: UserCreateDTO) -> User:
         user = User(**user_data.dict())
-        self.session.add(user)
+        self.db_session.add(user)
         try:
-            self.session.commit()
-            self.session.refresh(user)
+            self.db_session.commit()
+            self.db_session.refresh(user)
         except IntegrityError:
             raise ValueError("Username or Email already exists")
         return user
@@ -48,7 +49,16 @@ class UserRepository:
 
 
     async def username_or_email_exists(self, username: str, email: str) -> bool:
-        result = self.session.execute(
+        result = self.db_session.execute(
             select(User).filter_by(username=username, email=email)
         )
         return result.scalar_one_or_none() is not None
+
+    async def get_user_profile(self, user_id: int):
+        user = self.user_repository.get_user_by_id(user_id) 
+        return UserDTO.from_model(user)
+
+
+
+def provide_user_repository(db_session: Session) -> UserRepository:
+    return UserRepository(db_session=db_session)
