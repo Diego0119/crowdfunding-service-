@@ -3,11 +3,11 @@ from litestar.di import Provide
 from litestar.response import Response
 from sqlalchemy.orm import Session
 from typing import Union
-from app.services.funding.dtos import ProjectCreate, ProjectOut, ContributionBase
+from app.services.funding.dtos import ProjectCreate, ProjectOut, ContributionBase, EvaluationCreate
 from app.services.funding.repositories import ProjectRepository, provide_project_repository
 from app.services.funding.models import Project
 from app.database import sqlalchemy_plugin  
-from typing import List
+from typing import List, Optional
 
 
 class ProjectController(Controller):
@@ -42,6 +42,18 @@ class ProjectController(Controller):
         user_id = request.user.id
         contribution = project_repo.contribute_to_project(user_id, project_id, data.amount, data.payment_method)
         project_repo.cancel_proyects() #Se agrega para actualizar los proyectos a medida que se va utilizando la app
-        return {"detail": "Contribución exitosa", "amount": contribution.amount, "project_id": project_id}
+        if not contribution:
+            return Response({"detail": "Failed to add contribution."}, status_code=400)
+        else:
+            return {"detail": "Contribution added succesfully", "amount": contribution.amount, "project_id": project_id}
+
+    @post("/{project_id:int}/evaluate")
+    async def evaluate_project(self, project_id: int, data: EvaluationCreate, request: Request, project_repo: ProjectRepository) ->  Optional[Union[Response, dict]]:
+        user_id = request.user.id
+        evaluation = project_repo.add_evaluation(user_id, project_id, data.rating, data.comment)
+        if not evaluation:
+            return Response({"detail": "Failed to add evaluation."}, status_code=400)
+        else:
+            return {"detail": "Evaluation added successfully", "evaluation_id": evaluation.id}
 
 funding_router = Router(route_handlers=[ProjectController], path="/projects")

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.services.funding.models import Project, Contribution
+from app.services.funding.models import Project, Contribution, Evaluation
 from app.services.accounts.models import User
 from sqlalchemy.exc import IntegrityError
 from advanced_alchemy.repository import SQLAlchemySyncRepository
@@ -107,9 +107,32 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
             project.status = "completed"
             self.db_session.add(project)
             self.db_session.commit()
-            self.db_session.refresh(project)
+            self.db_session.refresh(project)    
 
+    def add_evaluation(self, user_id: int, project_id: int, rating: int, comment: Optional[str]) -> Evaluation:
+        """Permite a un usuario calificar un proyecto."""
+        project = self.db_session.query(Project).filter(Project.id == project_id).first()
 
+        if not project or project.status != "completed":
+            raise ValueError("Project not found.")
+
+        #verifica q el usuario haya contribuido al proyecto
+        contribution = self.db_session.query(Contribution).filter(Contribution.project_id == project_id, Contribution.user_id == user_id).first()
+        if not contribution:
+            raise ValueError("User not contribute to this project.")
+
+        evaluation = Evaluation(
+            project_id=project_id,
+            user_id=user_id,
+            rating=rating,
+            comment=comment,
+            created_at=datetime.now(timezone.utc)
+        )
+
+        self.db_session.add(evaluation)
+        self.db_session.commit()
+        self.db_session.refresh(evaluation)
+        return evaluation
 
 async def provide_project_repository(db_session: Session) -> ProjectRepository:
     return ProjectRepository(db_session=db_session)
