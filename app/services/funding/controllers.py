@@ -8,6 +8,7 @@ from app.services.funding.repositories import ProjectRepository, provide_project
 from app.services.funding.models import Project
 from app.database import sqlalchemy_plugin  
 from typing import List
+from typing import Dict
 
 
 class ProjectController(Controller):
@@ -38,10 +39,20 @@ class ProjectController(Controller):
         return ProjectOut.from_orm(project)
 
     @post("/{project_id:int}/contribute")
-    async def contribute_to_project(self, project_repo: ProjectRepository, project_id: int, request: Request, data: ContributionBase):
+    async def contribute_to_project(
+        self, 
+        project_repo: ProjectRepository, 
+        project_id: int, 
+        request: Request, 
+        data: ContributionBase
+    ) -> Dict[str, any]:  # se añadio el tipo de retorno
         user_id = request.user.id
         contribution = project_repo.contribute_to_project(user_id, project_id, data.amount, data.payment_method)
-        project_repo.cancel_proyects() #Se agrega para actualizar los proyectos a medida que se va utilizando la app
-        return {"detail": "Contribución exitosa", "amount": contribution.amount, "project_id": project_id}
+        project_repo.cancel_proyects()
+        return {
+            "detail": "Contribución exitosa", 
+            "amount": contribution.amount, 
+            "project_id": project_id
+        }
 
 funding_router = Router(route_handlers=[ProjectController], path="/projects")

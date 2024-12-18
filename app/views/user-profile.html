@@ -24,32 +24,70 @@
     <section class="user-profile">
         <h1>Mi Perfil</h1>
         <div class="profile-info">
-            <p><strong>Nombre de usuario:</strong> Juan Perez</p>
-            <p><strong>Email:</strong> juan@example.com</p>
-            <p><strong>Proyectos creados:</strong> 2</p>
-            <p><strong>Proyectos apoyados:</strong> 5</p>
+            <p><strong>Nombre de usuario:</strong> <span id="username">Cargando...</span></p>
+            <p><strong>Email:</strong> <span id="email">Cargando...</span></p>
+            <p><strong>Proyectos creados:</strong> <span id="created-projects">0</span></p>
+            <p><strong>Proyectos apoyados:</strong> <span id="supported-projects">0</span></p>
         </div>
 
         <h2>Mis Proyectos</h2>
-        <div class="project-list">
-            <div class="project-card">
-                <img src="public/images/project1.jpg" alt="Proyecto 1">
-                <h3>Proyecto A</h3>
-                <p>Descripción corta del proyecto A.</p>
-                <a href="project.html" class="btn-secondary">Ver Más</a>
-            </div>
-            <div class="project-card">
-                <img src="public/images/project2.jpg" alt="Proyecto 2">
-                <h3>Proyecto B</h3>
-                <p>Descripción corta del proyecto B.</p>
-                <a href="project.html" class="btn-secondary">Ver Más</a>
-            </div>
+        <div id="project-list" class="project-list">
+            <!-- Aquí se cargarán los proyectos creados -->
         </div>
     </section>
 
     <footer>
         <p>&copy; 2024 Crowdfunding App. Todos los derechos reservados.</p>
     </footer>
+
+    <script>
+        async function fetchUserProfile() {
+            try {
+                // Obtener datos del perfil del usuario
+                const userResponse = await fetch('http://localhost:8000/user-profile');
+                if (!userResponse.ok) {
+                    throw new Error('Error al obtener el perfil del usuario.');
+                }
+                const userData = await userResponse.json();
+
+                // Actualizar información del usuario
+                document.getElementById('username').textContent = userData.username;
+                document.getElementById('email').textContent = userData.email;
+                document.getElementById('created-projects').textContent = userData.created_projects_count;
+                document.getElementById('supported-projects').textContent = userData.supported_projects_count;
+
+                // Obtener proyectos creados por el usuario
+                const projectsResponse = await fetch('http://localhost:8000/user-projects');
+                if (!projectsResponse.ok) {
+                    throw new Error('Error al obtener los proyectos del usuario.');
+                }
+                const projects = await projectsResponse.json();
+
+                const projectList = document.getElementById('project-list');
+                projectList.innerHTML = ''; // Limpiar contenido previo
+
+                // Renderizar proyectos creados
+                projects.forEach(project => {
+                    const projectCard = `
+                <div class="project-card">
+                    <img src="public/images/project${project.id}.jpg" alt="${project.name}">
+                    <h3>${project.name}</h3>
+                    <p>${project.description}</p>
+                    <a href="project.html?id=${project.id}" class="btn-secondary">Ver Más</a>
+                </div>
+            `;
+                    projectList.innerHTML += projectCard;
+                });
+            } catch (error) {
+                console.error(error);
+                alert('Hubo un error al cargar el perfil del usuario.');
+            }
+        }
+
+        // Llamar a la función al cargar la página
+        document.addEventListener('DOMContentLoaded', fetchUserProfile);
+
+    </script>
 </body>
 
 </html>
