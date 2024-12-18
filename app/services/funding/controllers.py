@@ -16,6 +16,7 @@ class ProjectController(Controller):
 
     dependencies = {"project_repo": Provide(provide_project_repository)}
 
+
     @post("/create")
     async def create_project(self, project_repo: ProjectRepository, data: ProjectCreate, request: Request) -> Response:
         creator_id = 1 
@@ -52,12 +53,14 @@ class ProjectController(Controller):
                 payment_method=data.payment_method
             )
             project_repo.cancel_proyects()
+
             return {
                 "detail": "Contribución exitosa",
                 "amount": contribution.amount,
                 "project_id": project_id
             }
-        except ValueError as e:
+
+        except Exception as e:
             return {"error": str(e)}, 400
 
 
