@@ -54,39 +54,24 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         self.db_session.refresh(project)
         return project
 
-    def contribute_to_project(self, user_id: int, project_id: int, amount: float, payment_method: str) -> Contribution:
-        """Permite a un usuario contribuir a un proyecto."""
-        user = self.db_session.query(User).filter(User.id == user_id).first()
+    def contribute_to_project(self, project_id: int, amount: float, payment_method: str):
         project = self.db_session.query(Project).filter(Project.id == project_id).first()
-        
-        if not user or not project:
-            raise ValueError("User or project not found.")
-        
-        if user.money is None or user.money < amount:
-            raise ValueError("Insufficient money in the users account.")
-        
-        if project.status != "active":
-            raise ValueError("Project is not active.")
-
-        new_balance = user.money - amount
-        user.money = new_balance
-        project.current_amount = project.current_amount + amount
-        project.contributions_count = project.contributions_count + 1
+        if not project:
+            raise ValueError("Project not found.")
 
         contribution = Contribution(
-            user_id=user_id,
-            project_id=project_id,
-            amount=amount,
-            payment_method=payment_method,
-            contributed_at= datetime.now(timezone.utc)
+        project_id=project_id,
+        user_id=1, 
+        amount=amount,
+        contributed_at=datetime.utcnow(),
+        payment_method=payment_method,
         )
-        
+        self.db_session.add(contribution)
         self.db_session.add(contribution)
         self.db_session.commit()
-        self.db_session.refresh(project)
-        self.db_session.refresh(user)
-        self.check_and_start_project(project)
+
         return contribution
+
 
     def cancel_proyects(self):
         """Marca proyectos como cancelados si no alcanzaron el objetivo después de la fecha límite."""
@@ -108,7 +93,6 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
             self.db_session.add(project)
             self.db_session.commit()
             self.db_session.refresh(project)
-
 
 
 async def provide_project_repository(db_session: Session) -> ProjectRepository:

@@ -1,42 +1,35 @@
-from litestar import post, get, put, delete, Router
+from litestar import post, get, put, delete, Router, Response
 from app.services.accounts.dtos import UserCreateDTO, UserUpdateDTO, UserDTO
-from app.services.accounts.repositories import UserRepository
+from app.services.accounts.repositories import UserRepository, provide_user_repository
 from litestar import Controller
-from typing import Any
+from litestar.di import Provide
+from typing import Any, Dict
 
 class UserController(Controller):
-    path = "/"  
+    path = "/"
 
-    @get("/{user_id:int}", response_model=UserDTO)
-    async def get_user(self, request: Any, user_id: int) -> None:
-            async with self.session_provider() as session:
-                user_repo = UserRepository(session)
-                user = user_repo.get_user_by_id(user_id)
-                if not user:
-                    return
-                return user
+    dependencies = {"user_repo": Provide(provide_user_repository)}
 
-    @put("/{user_id:int}", response_model=UserDTO)
-    async def update_user(self, request: Any, user_id: int, data: UserUpdateDTO) -> None:
-            async with self.session_provider() as session:
-                user_repo = UserRepository(session)
-                try:
-                    user = user_repo.update_user(user_id, data)
-                    return user
-                except ValueError:
-                    return
+    # @get("/{user_id:int}", response_model=UserDTO)
+    # async def get_user(self, user_id: int, user_repo: UserRepository) -> Any:
+    #     user = user_repo.get_user_by_id(user_id)
+    #     if not user:
+    #         return Response({"detail": "User not found"}, status_code=404)
+    #     return UserDTO.from_orm(user)
 
-    @delete("/{user_id:int}", response_description="User deleted successfully")
-    async def delete_user(self, request: Any, user_id: int) -> None:
-            async with self.session_provider() as session:
-                user_repo = UserRepository(session)
-                try:
-                    user_repo.delete_user(user_id)
-                    return {"message": "User deleted successfully"}
-                except ValueError:
-                    return
+    # @put("/{user_id:int}", response_model=UserDTO)
+    # async def update_user(self, user_id: int, data: UserUpdateDTO, user_repo: UserRepository) -> Any:
+    #     user = user_repo.update_user(user_id, data)
+    #     if not user:
+    #         return Response({"detail": "User not found or could not be updated"}, status_code=404)
+    #     return UserDTO.from_orm(user)
 
-accounts_router = Router(
-    route_handlers=[UserController], 
-    path="/users",
-)
+    # @delete("/{user_id:int}", status_code=204)
+    # async def delete_user(self, user_id: int, user_repo: UserRepository) -> Response:
+    #     success = user_repo.delete_user(user_id)
+    #     if not success:
+    #         return Response({"detail": "User not found or could not be deleted"}, status_code=404)
+    #     # 204 No Content: No devuelve un cuerpo
+    #     return Response(status_code=204)
+
+accounts_router = Router(route_handlers=[UserController], path="/users")

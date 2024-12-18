@@ -40,19 +40,26 @@ class ProjectController(Controller):
 
     @post("/{project_id:int}/contribute")
     async def contribute_to_project(
-        self, 
-        project_repo: ProjectRepository, 
-        project_id: int, 
-        request: Request, 
+        self,
+        project_repo: ProjectRepository,
+        project_id: int,
         data: ContributionBase
-    ) -> Dict[str, any]:  # se añadio el tipo de retorno
-        user_id = request.user.id
-        contribution = project_repo.contribute_to_project(user_id, project_id, data.amount, data.payment_method)
-        project_repo.cancel_proyects()
-        return {
-            "detail": "Contribución exitosa", 
-            "amount": contribution.amount, 
-            "project_id": project_id
-        }
+    ) -> Dict[str, any]:
+        try:
+            contribution = project_repo.contribute_to_project(
+                project_id=project_id,
+                amount=data.amount,
+                payment_method=data.payment_method
+            )
+            project_repo.cancel_proyects()
+            return {
+                "detail": "Contribución exitosa",
+                "amount": contribution.amount,
+                "project_id": project_id
+            }
+        except ValueError as e:
+            return {"error": str(e)}, 400
+
+
 
 funding_router = Router(route_handlers=[ProjectController], path="/projects")
