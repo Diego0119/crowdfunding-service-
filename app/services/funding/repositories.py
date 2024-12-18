@@ -40,10 +40,9 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         """Obtiene todos los proyectos."""
         return self.db_session.query(Project).all()
     
-    def get_project_by_id(self, project_id: int):
-        project = self.db.query(Project).filter(Project.id == project_id).first()
-        return project
-
+    def get_project_by_id(self, project_id: int) -> Optional[Project]:
+        """Obtiene un proyecto por su ID."""
+        return self.db_session.query(Project).filter(Project.id == project_id).first()
     
     def update_project(self, project: Project, updated_data: dict) -> Project:
         """Actualiza un proyecto con nuevos datos."""
@@ -119,10 +118,6 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         self.db_session.commit()
         self.db_session.refresh(evaluation)
         return evaluation
-
-    def get_project_by_id(self, project_id: int):
-        project = self.db.query(Project).filter(Project.id == project_id).first() 
-        return project
 
 async def provide_project_repository(db_session: Session) -> ProjectRepository:
     return ProjectRepository(db_session=db_session)
