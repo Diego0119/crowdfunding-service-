@@ -3,7 +3,7 @@ from app.services.funding.models import Project, Contribution
 from app.services.accounts.models import User
 from sqlalchemy.exc import IntegrityError
 from advanced_alchemy.repository import SQLAlchemySyncRepository
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict
 from typing import Optional
 
@@ -75,7 +75,7 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
             project_id=project_id,
             amount=amount,
             payment_method=payment_method,
-            contributed_at=datetime.utcnow()
+            contributed_at= datetime.now(timezone.utc)
         )
         
         self.db_session.add(contribution)
@@ -83,6 +83,21 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         self.db_session.refresh(project)
         self.db_session.refresh(user)
         return contribution
+
+    def cancel_proyects(self):
+        """Marca proyectos como cancelados si no alcanzaron el objetivo después de la fecha límite."""
+        now = datetime.now(timezone.utc)
+        projects_to_cancel = self.db_session.query(Project).filter(
+            Project.status == "active",
+            Project.end_date < now,
+            Project.current_amount < Project.goal_amount
+        ).all()
+
+        for project in projects_to_cancel:
+            project.status = "cancelled"
+
+        self.db_session.commit()
+
 
 async def provide_project_repository(db_session: Session) -> ProjectRepository:
     return ProjectRepository(db_session=db_session)

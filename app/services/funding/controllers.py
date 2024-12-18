@@ -24,11 +24,13 @@ class ProjectController(Controller):
 
     @get("/")
     async def get_projects(self, project_repo: ProjectRepository) -> List[ProjectOut]:
+        project_repo.cancel_proyects() #Se agrega para actualizar los proyectos a medida que se va utilizando la app
         projects = project_repo.get_projects()
         return [ProjectOut.from_orm(project) for project in projects]
 
     @get("/{project_id:int}")
     async def get_project(self, project_id: int, project_repo: ProjectRepository) -> Union[ProjectOut, Response]:
+        project_repo.cancel_proyects() #Se agrega para actualizar los proyectos a medida que se va utilizando la app
         project = project_repo.get_project_by_id(project_id)
         if not project:
             return Response({"detail": "Project not found"}, status_code=404)
@@ -39,6 +41,7 @@ class ProjectController(Controller):
     async def contribute_to_project(self, project_repo: ProjectRepository, project_id: int, request: Request, data: ContributionBase):
         user_id = request.user.id
         contribution = project_repo.contribute_to_project(user_id, project_id, data.amount, data.payment_method)
+        project_repo.cancel_proyects() #Se agrega para actualizar los proyectos a medida que se va utilizando la app
         return {"detail": "Contribución exitosa", "amount": contribution.amount, "project_id": project_id}
 
 funding_router = Router(route_handlers=[ProjectController], path="/projects")
