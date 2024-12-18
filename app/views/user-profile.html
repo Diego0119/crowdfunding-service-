@@ -43,7 +43,7 @@
     <script>
         async function fetchUserProfile() {
             try {
-                const userResponse = await fetch('http://localhost:8000/user-profile');
+                const userResponse = await fetch('http://localhost:8000/users/user-profile');
                 if (!userResponse.ok) {
                     throw new Error('Error al obtener el perfil del usuario.');
                 }

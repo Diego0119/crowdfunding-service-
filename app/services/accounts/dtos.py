@@ -9,7 +9,6 @@ from .models import User
 class UserDTO(SQLAlchemyDTO[User]):
     config = SQLAlchemyDTOConfig(exclude={"password"}, max_nested_depth=0)
 
-
 class UserFullDTO(SQLAlchemyDTO[User]):
     config = SQLAlchemyDTOConfig(exclude={"password"})
 

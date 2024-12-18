@@ -26,7 +26,7 @@ class UserRepository(SQLAlchemySyncRepository[User]):
         return user
 
     async def update_user(self, user_id: int, user_data: UserUpdateDTO) -> User:
-        user = await self.get_user_by_id(user_id)
+        user = åself.get_user_by_id(user_id)
         if not user:
             raise ValueError("User not found")
         
@@ -38,7 +38,7 @@ class UserRepository(SQLAlchemySyncRepository[User]):
         return user
 
     async def delete_user(self, user_id: int) -> None:
-        user = await self.get_user_by_id(user_id)
+        user = self.get_user_by_id(user_id)
         if not user:
             raise ValueError("User not found")
         
@@ -50,6 +50,11 @@ class UserRepository(SQLAlchemySyncRepository[User]):
             select(User).filter_by(username=username, email=email)
         )
         return result.scalar_one_or_none() is not None
+
+    async def get_user_profile(self, user_id: int):
+        user = self.user_repository.get_user_by_id(user_id) 
+        return UserDTO.from_model(user)
+
 
 
 def provide_user_repository(db_session: Session) -> UserRepository:

@@ -10,6 +10,15 @@ class UserController(Controller):
 
     dependencies = {"user_repo": Provide(provide_user_repository)}
 
+    @get("/user-profile", response_model=UserDTO)
+    async def get_user_profile(self, user_repo: UserRepository) -> Any:
+        user_id = 1  
+        user = user_repo.get_user_by_id(user_id)
+        if not user:
+            return Response({"detail": "User not found"}, status_code=404)
+        return UserDTO.from_model(user)
+
+
     # @get("/{user_id:int}", response_model=UserDTO)
     # async def get_user(self, user_id: int, user_repo: UserRepository) -> Any:
     #     user = user_repo.get_user_by_id(user_id)
