@@ -6,6 +6,7 @@ from app.services.accounts.models import User
 from app.services.accounts.dtos import UserCreateDTO, UserUpdateDTO
 from sqlalchemy.orm import sessionmaker
 from typing import Optional
+from advanced_alchemy.repository import SQLAlchemySyncRepository
 
 class UserRepository(SQLAlchemySyncRepository[User]):
     def __init__(self, db_session: Session):
