@@ -72,6 +72,10 @@
                     <button type="submit" class="btn-primary">Contribuir</button>
                 </form>
             </div>
+            <div class="project-actions">
+                <!-- Botón para finalizar proyecto -->
+                <button id="finalize-project-btn" class="btn-primary" style="display: none;">Finalizar Proyecto</button>
+            </div>
             
         </section>
     </main>
@@ -101,6 +105,9 @@
                     document.getElementById("start-date").textContent = new Date(data.start_date).toLocaleDateString();
                     document.getElementById("end-date").textContent = new Date(data.end_date).toLocaleDateString();
                     
+                    if (data.status === "completed") {
+                        document.getElementById("finalize-project-btn").style.display = "inline-block";
+                    }
 
                     const rewardsList = document.getElementById("rewards-list");
                     const rewards = data.rewards.split(",");
@@ -115,6 +122,30 @@
             .catch(error => {
                 console.error("Error al obtener los datos del proyecto:", error);
             });
+
+        document.getElementById("finalize-project-btn").addEventListener("click", async () => {
+        if (!confirm("¿Estás seguro de que deseas finalizar este proyecto?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/projects/${projectId}/finalize`, {
+                method: 'POST',
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error al finalizar el proyecto.");
+            }
+
+            const result = await response.json();
+            alert(result.detail || "El proyecto ha sido finalizado exitosamente.");
+            location.reload();
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error.message || "Hubo un error al finalizar el proyecto.");
+        }
+    });
     </script>
 
 <script>

@@ -123,5 +123,20 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         self.db_session.refresh(evaluation)
         return evaluation
 
+    def finalize_project(self, project_id: int):
+        project = self.db_session.query(Project).filter(Project.id == project_id).first()
+        if not project:
+            raise ValueError("Project not found.")
+        
+        if project.status != "completed":
+            raise ValueError("Only completed projects can be finalized.")
+        
+        project.status = "finalized"
+        self.db_session.add(project)
+        self.db_session.commit()
+        self.db_session.refresh(project)
+        
+        return project
+
 async def provide_project_repository(db_session: Session) -> ProjectRepository:
     return ProjectRepository(db_session=db_session)

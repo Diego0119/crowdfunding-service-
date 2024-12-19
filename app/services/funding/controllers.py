@@ -83,6 +83,23 @@ class ProjectController(Controller):
             return Response({"detail": "Failed to add evaluation."}, status_code=400)
         else:
             return Response({"detail": "Evaluation added successfully", "evaluation_id": evaluation.id}, status_code=200)
-
+        
+    @post("/{project_id:int}/finalize")
+    async def finalize_project(self, project_id: int, project_repo: ProjectRepository) -> Optional[Response]:
+        try:
+            project = project_repo.finalize_project(project_id)
+            return Response(
+                content={
+                    "detail": f"El proyecto '{project.name}' ha sido finalizado exitosamente.",
+                    "project_id": project.id,
+                    "status": project.status
+                },
+                status_code=200
+            )
+        except ValueError as e:
+            return Response(
+                content={"error": str(e)},
+                status_code=404
+            )
 
 funding_router = Router(route_handlers=[ProjectController], path="/projects")
