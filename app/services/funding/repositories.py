@@ -66,6 +66,9 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         contributed_at=datetime.utcnow(),
         payment_method=payment_method,
         )
+        
+        project.current_amount += amount
+        self.db_session.add(project)
         self.db_session.add(contribution)
         self.db_session.add(contribution)
         self.db_session.commit()
