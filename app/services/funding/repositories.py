@@ -68,6 +68,7 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         )
         
         project.current_amount += amount
+        self.check_and_start_project(project)
         self.db_session.add(project)
         self.db_session.add(contribution)
         self.db_session.add(contribution)
