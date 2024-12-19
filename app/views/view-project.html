@@ -57,8 +57,8 @@
             </div>
 
             <div class="project-actions">
+                <form id="contribute-form" style="display: none;">
                 <h3>Contribuir al Proyecto</h3>
-                <form id="contribute-form">
                     <label for="amount">Monto:</label>
                     <input type="number" id="amount" name="amount" min="1" step="0.01" required>
                     
@@ -72,14 +72,39 @@
                     <button type="submit" class="btn-primary">Contribuir</button>
                 </form>
             </div>
+
             <div class="project-actions">
                 <!-- Botón para finalizar proyecto -->
                 <button id="finalize-project-btn" class="btn-primary" style="display: none;">Finalizar Proyecto</button>
+            </div>  
+
+            <div class="project-evaluations">
+                <h3>Evaluaciones del Proyecto</h3>
+                <p id="evaluation-average">Promedio de Calificaciones: N/A</p>
+                <div id="evaluations-list">
+                    <!-- Las evaluaciones se cargarán dinámicamente aquí -->
+                </div>
             </div>
+
+            <div class="project-actions">
+                <div id="evaluation-form-container" style="display: none;">
+                    <h3>Evaluar Proyecto</h3>
+                    <form id="evaluation-form">
+                        <label for="rating">Calificación (1-5):</label>
+                        <input type="number" id="rating" name="rating" min="1" max="5" required>
+                        
+                        <label for="comment">Comentario:</label>
+                        <textarea id="comment" name="comment" placeholder="Escribe tu comentario aquí..."></textarea>
+                        
+                        <button type="submit" class="btn-primary">Enviar Evaluación</button>
+                    </form>
+                </div>
+            </div>    
+            
             <div class="project-actions">
                 <!-- Botón para eliminar proyecto -->
                 <button id="delete-project-btn" class="btn-danger" style="display: none;">Eliminar Proyecto</button>
-            </div>            
+            </div>      
         </section>
     </main>
 
@@ -108,11 +133,16 @@
                     document.getElementById("start-date").textContent = new Date(data.start_date).toLocaleDateString();
                     document.getElementById("end-date").textContent = new Date(data.end_date).toLocaleDateString();
                     
+                    if (data.status === "active") {
+                        document.getElementById("contribute-form").style.display = "block";
+                    }
+
                     if (data.status === "completed") {
                         document.getElementById("finalize-project-btn").style.display = "inline-block";
                     }
                     if (data.status === "finalized") {
                         document.getElementById("delete-project-btn").style.display = "inline-block";
+                        document.getElementById("evaluation-form-container").style.display = "block";
                     }
 
                     const rewardsList = document.getElementById("rewards-list");
@@ -176,6 +206,91 @@
             alert(error.message || "Hubo un error al eliminar el proyecto.");
         }
     });
+
+    document.getElementById("evaluation-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const rating = parseInt(document.getElementById("rating").value, 10);
+        const comment = document.getElementById("comment").value;
+
+        if (isNaN(rating) || rating < 1 || rating > 5) {
+            alert("Por favor, ingresa una calificación válida entre 1 y 5.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/projects/${projectId}/evaluate`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    rating: rating,
+                    comment: comment || null,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error al enviar la evaluación.");
+            }
+
+            const result = await response.json();
+            alert(result.detail || "Evaluación enviada exitosamente.");
+            location.reload(); 
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error.message || "Hubo un error al enviar la evaluación. Por favor, inténtalo de nuevo.");
+        }
+    });
+
+    const loadEvaluations = async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/projects/${projectId}/evaluations`);
+            if (!response.ok) {
+                throw new Error("Error al obtener las evaluaciones del proyecto.");
+            }
+
+            const evaluations = await response.json();
+            const evaluationsList = document.getElementById("evaluations-list");
+            const evaluationAverage = document.getElementById("evaluation-average");
+
+            if (evaluations.length === 0) {
+                evaluationsList.innerHTML = "<p>No hay evaluaciones disponibles para este proyecto.</p>";
+                evaluationAverage.textContent = "Promedio de Calificaciones: N/A";
+            } else {
+                evaluationsList.innerHTML = "";
+
+                // Calcular el promedio
+                const totalRatings = evaluations.reduce((sum, evaluation) => sum + evaluation.rating, 0);
+                const averageRating = (totalRatings / evaluations.length).toFixed(2);
+
+
+                evaluationAverage.textContent = `Promedio de Calificaciones: ${averageRating}/5`;
+
+                evaluations.forEach((evaluation) => {
+                    const evaluationItem = document.createElement("div");
+                    evaluationItem.classList.add("evaluation-item");
+
+                    evaluationItem.innerHTML = `
+                        <p><strong>Calificación:</strong> ${evaluation.rating}/5</p>
+                        <p><strong>Comentario:</strong> ${evaluation.comment || "Sin comentario"}</p>
+                        <small><strong>Fecha:</strong> ${new Date(evaluation.created_at).toLocaleDateString()}</small>
+                    `;
+                    evaluationsList.appendChild(evaluationItem);
+                });
+            }
+        } catch (error) {
+            console.error("Error al cargar las evaluaciones:", error);
+            const evaluationsList = document.getElementById("evaluations-list");
+            const evaluationAverage = document.getElementById("evaluation-average");
+            evaluationsList.innerHTML = "<p>Error al cargar las evaluaciones. Por favor, intenta nuevamente más tarde.</p>";
+            evaluationAverage.textContent = "Promedio de Calificaciones: N/A";
+        }
+    };
+
+    loadEvaluations();
+
     </script>
 
 <script>

@@ -123,6 +123,9 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         self.db_session.refresh(evaluation)
         return evaluation
 
+    def get_evaluations(self, project_id: int):
+        return self.db_session.query(Evaluation).filter(Evaluation.project_id == project_id).all()
+
     def finalize_project(self, project_id: int):
         project = self.db_session.query(Project).filter(Project.id == project_id).first()
         if not project:
@@ -149,6 +152,7 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         if not project:
             raise ValueError("Project not found.")
         self.db_session.query(Contribution).filter(Contribution.project_id == project_id).delete()
+        self.db_session.query(Evaluation).filter(Evaluation.project_id == project_id).delete()
         self.db_session.delete(project)
         self.db_session.commit()
 

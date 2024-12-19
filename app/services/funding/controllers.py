@@ -7,9 +7,8 @@ from app.services.funding.dtos import ProjectCreate, ProjectOut, ContributionBas
 from app.services.funding.repositories import ProjectRepository, provide_project_repository
 from app.services.funding.models import Project
 from app.database import sqlalchemy_plugin  
-from typing import List
 from typing import Dict
-from typing import List, Optional
+from typing import List, Optional, Any
 from litestar import Response
 
 
@@ -84,6 +83,22 @@ class ProjectController(Controller):
         else:
             return Response({"detail": "Evaluation added successfully", "evaluation_id": evaluation.id}, status_code=200)
         
+    @get("/{project_id:int}/evaluations")
+    async def get_evaluations(self, project_id: int, project_repo: ProjectRepository) -> Union[List[Dict[str, Any]], Response]:
+        project = project_repo.get_project_by_id(project_id)
+        if not project:
+            return Response({"detail": "Project not found"}, status_code=404)
+
+        evaluations = project_repo.get_evaluations(project_id)
+        return [
+            {
+                "rating": evaluation.rating,
+                "comment": evaluation.comment,
+                "created_at": evaluation.created_at,
+            }
+            for evaluation in evaluations
+        ]
+
     @post("/{project_id:int}/finalize")
     async def finalize_project(self, project_id: int, project_repo: ProjectRepository) -> Optional[Response]:
         try:

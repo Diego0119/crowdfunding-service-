@@ -347,3 +347,48 @@ footer {
 .project-card:hover {
     transform: translateY(-10px);
 }
+
+.project-evaluations {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.evaluation-item {
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.evaluation-item:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.evaluation-item p strong {
+    font-size: 1.1em;
+    color: #333;
+}
+
+.evaluation-item small {
+    color: #666;
+    font-size: 0.9em;
+    display: block;
+    margin-top: 5px;
+}
+
+.evaluation-item p {
+    margin: 5px 0;
+}
+
+#evaluation-average {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
