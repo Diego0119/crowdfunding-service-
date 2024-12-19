@@ -31,8 +31,8 @@
                 <label for="description">Descripción:</label>
                 <textarea id="description" name="description" required></textarea>
 
-                <label for="goal">Meta de Financiación:</label>
-                <input type="number" id="goal" name="goal" required>
+                <label for="goal_amount">Meta de Financiación:</label>
+                <input type="number" id="goal_amount" name="goal_amount" required>
 
                 <label for="start_date">Fecha de Inicio:</label>
                 <input type="date" id="start_date" name="start_date" required>
@@ -63,7 +63,7 @@
             const projectData = {
                 name: formData.get('name'),
                 description: formData.get('description'),
-                goal: parseFloat(formData.get('goal')),
+                goal_amount: parseFloat(formData.get('goal_amount')),
                 start_date: formData.get('start_date'),
                 end_date: formData.get('end_date'),
                 status: formData.get('status'),
