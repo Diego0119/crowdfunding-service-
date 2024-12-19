@@ -57,8 +57,22 @@
             </div>
 
             <div class="project-actions">
-                <button class="btn-primary">Contribuir al Proyecto</button>
+                <h3>Contribuir al Proyecto</h3>
+                <form id="contribute-form">
+                    <label for="amount">Monto:</label>
+                    <input type="number" id="amount" name="amount" min="1" step="0.01" required>
+                    
+                    <label for="payment-method">Método de Pago:</label>
+                    <select id="payment-method" name="payment-method" required>
+                        <option value="credit_card">Tarjeta de Crédito</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="bank_transfer">Transferencia Bancaria</option>
+                    </select>
+                    
+                    <button type="submit" class="btn-primary">Contribuir</button>
+                </form>
             </div>
+            
         </section>
     </main>
 
@@ -102,6 +116,43 @@
                 console.error("Error al obtener los datos del proyecto:", error);
             });
     </script>
+
+<script>
+    const contributeForm = document.getElementById('contribute-form');
+    contributeForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        const amount = document.getElementById('amount').value;
+        const paymentMethod = document.getElementById('payment-method').value;
+
+        try {
+            const response = await fetch(`http://localhost:8000/projects/${projectId}/contribute`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: parseFloat(amount),
+                    payment_method: paymentMethod,
+                }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.detail || 'Contribución realizada exitosamente.');
+                location.reload();
+            } else {
+                throw new Error(result.error || 'Error al realizar la contribución.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Hubo un error al realizar la contribución. Por favor, inténtalo de nuevo.');
+        }
+    });
+</script>
+
 </body>
 
 </html>
