@@ -138,5 +138,19 @@ class ProjectRepository(SQLAlchemySyncRepository[Project]):
         
         return project
 
+    def delete_project(self, project_id: int) -> None:
+        project = self.db_session.query(Project).filter(Project.id == project_id).first()
+        if not project:
+            raise ValueError("Project not found.")
+        if project.status != "finalized":
+            raise ValueError("Only finalized projects can be eliminated.")
+        
+        project = self.db_session.query(Project).filter(Project.id == project_id).first()
+        if not project:
+            raise ValueError("Project not found.")
+        self.db_session.query(Contribution).filter(Contribution.project_id == project_id).delete()
+        self.db_session.delete(project)
+        self.db_session.commit()
+
 async def provide_project_repository(db_session: Session) -> ProjectRepository:
     return ProjectRepository(db_session=db_session)

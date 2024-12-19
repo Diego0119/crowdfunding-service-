@@ -76,7 +76,10 @@
                 <!-- Botón para finalizar proyecto -->
                 <button id="finalize-project-btn" class="btn-primary" style="display: none;">Finalizar Proyecto</button>
             </div>
-            
+            <div class="project-actions">
+                <!-- Botón para eliminar proyecto -->
+                <button id="delete-project-btn" class="btn-danger" style="display: none;">Eliminar Proyecto</button>
+            </div>            
         </section>
     </main>
 
@@ -108,6 +111,9 @@
                     if (data.status === "completed") {
                         document.getElementById("finalize-project-btn").style.display = "inline-block";
                     }
+                    if (data.status === "finalized") {
+                        document.getElementById("delete-project-btn").style.display = "inline-block";
+                    }
 
                     const rewardsList = document.getElementById("rewards-list");
                     const rewards = data.rewards.split(",");
@@ -123,7 +129,7 @@
                 console.error("Error al obtener los datos del proyecto:", error);
             });
 
-        document.getElementById("finalize-project-btn").addEventListener("click", async () => {
+    document.getElementById("finalize-project-btn").addEventListener("click", async () => {
         if (!confirm("¿Estás seguro de que deseas finalizar este proyecto?")) {
             return;
         }
@@ -144,6 +150,30 @@
         } catch (error) {
             console.error("Error:", error);
             alert(error.message || "Hubo un error al finalizar el proyecto.");
+        }
+    });
+
+    document.getElementById("delete-project-btn").addEventListener("click", async () => {
+        if (!confirm("¿Estás seguro de que deseas eliminar este proyecto?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8000/projects/${projectId}/delete`, {
+                method: 'POST',
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Error al eliminar el proyecto.");
+            }
+
+            const result = await response.json();
+            alert(result.detail || "El proyecto ha sido eliminado exitosamente.");
+            window.location.href = "index.html";
+        } catch (error) {
+            console.error("Error:", error);
+            alert(error.message || "Hubo un error al eliminar el proyecto.");
         }
     });
     </script>
