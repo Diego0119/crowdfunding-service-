@@ -45,6 +45,7 @@
                     <progress id="funding-progress" value="0" max="100"></progress>
                     <p><strong>Fecha de Inicio:</strong> <span id="start-date">01 de diciembre de 2024</span></p>
                     <p><strong>Fecha de Fin:</strong> <span id="end-date">01 de diciembre de 2025</span></p>
+                    <p><strong>Estado:</strong> <span id="project-status">project-status</span></p>
                 </div>
             </div>
 
@@ -78,12 +79,14 @@
                     document.getElementById("project-name").textContent = data.name;
                     document.getElementById("project-category").textContent = data.category || "Categoría no disponible";
                     document.getElementById("project-description").textContent = data.description;
+                    document.getElementById("project-status").textContent = data.status;
                     document.getElementById("funding-goal").textContent = data.goal_amount.toFixed(2);
                     document.getElementById("amount-raised").textContent = data.current_amount.toFixed(2);
                     document.getElementById("progress-percentage").textContent = `${((data.current_amount / data.goal_amount) * 100).toFixed(2)}%`;
                     document.getElementById("funding-progress").value = (data.current_amount / data.goal_amount) * 100;
                     document.getElementById("start-date").textContent = new Date(data.start_date).toLocaleDateString();
                     document.getElementById("end-date").textContent = new Date(data.end_date).toLocaleDateString();
+                    
 
                     const rewardsList = document.getElementById("rewards-list");
                     const rewards = data.rewards.split(",");
